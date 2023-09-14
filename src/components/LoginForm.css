@@ -1,0 +1,23 @@
+/* CSS */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.form-container h1 {
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.form-input {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.form-container .ion-button {
+    margin-top: 30px;
+}
