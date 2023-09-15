@@ -1,16 +1,16 @@
-import React, { useState } from "react";
 import {
     IonButton,
     IonIcon,
     IonInput,
+    IonItem,
     IonLabel,
     IonList,
-    IonItem,
     useIonRouter,
 } from "@ionic/react";
 import { qrCode } from "ionicons/icons";
-import LoginAlert from "./LoginAlert";
+import { useState } from "react";
 import { isNumeric } from "../utils/main";
+import LoginAlert from "./LoginAlert";
 import "./LoginForm.css";
 
 function LoginForm() {
@@ -25,8 +25,6 @@ function LoginForm() {
             return;
         }
     };
-
-
 
     return (
         <div className="form-container">
@@ -58,13 +56,12 @@ function LoginForm() {
                 </IonItem>
             </IonList>
 
-            <IonButton expand="full" onClick={login} size="large" className="login-button">
+            <IonButton onClick={login} size="large" className="login-button">
                 Войти
             </IonButton>
 
             <IonButton
                 fill="outline"
-                expand="full"
                 className="qr-button"
                 onClick={() => {
                     router.push("/account/qr", "forward");
