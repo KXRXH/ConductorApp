@@ -1,0 +1,28 @@
+.rounded {
+    border-radius: 10px;
+}
+
+
+.shift-buttons {
+    margin-top: 20px;
+}
+
+.centered {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ToolsTab.css */
+.spin {
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

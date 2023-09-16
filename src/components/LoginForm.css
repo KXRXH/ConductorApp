@@ -1,37 +1,16 @@
-/* CSS */
-.form-container {
+.content-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 80vh;
+  flex-direction: column;
+}
+
+.tip-text {
+  font-size: 24px;
+  font-weight: bold;
+  color: hsl(0, 0%, 73%);
   text-align: center;
-  padding-top: 10%;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.form-container .ion-button {
-  margin-top: 30px;
-  animation: slideIn 0.5s ease-in-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(50px);
-  }
-
-  to {
-    transform: translateY(0);
-  }
+  padding: 16px;
+  border-radius: 8px;
 }

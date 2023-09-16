@@ -10,37 +10,42 @@ import {
 import { useEffect, useState } from 'react';
 import DeAlert from '../components/DeAlert';
 import './NfcTab.css';
+import ErrorAlert from '../components/ErrorAlert';
 
 function NfcTab() {
-  const [isNfcAlertOpen, setIsNfcAlertOpen] = useState(false);
+  const [isErrorAlertOpen, setErrorAlertOpenn] = useState(false);
   const [nfcInfo, setNfcInfo] = useState('');
 
   useEffect(() => {
     NFC.enabled().then((_) => {
       NFC.addTagDiscoveredListener().subscribe((event: NdefEvent) => {
-        const decodedTagId = NFC.bytesToHexString(event.tag.id);
-        setNfcInfo(decodedTagId);
-        setIsNfcAlertOpen(true);
+        if (event.tag.id === null) {
+          return;
+        }
+        setNfcInfo(NFC.bytesToHexString(event.tag.id));
+        setErrorAlertOpenn(true);
       });
     });
+    return () => {
+    }
   }, []);
 
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+      <IonToolbar>
           <IonTitle>Бесконтактное чтение карты</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <div className='content-container'>
           <IonText className='tip-text'>
-            Приложите карту к обратной стороне телефона
+            Приложите карту к обратной стороне устройства
           </IonText>
         </div>
         {// TODO: SHOW CARDHOLDER INFO 
         }
-        <DeAlert isOpen={isNfcAlertOpen} info={nfcInfo} setClose={(isOpen) => setIsNfcAlertOpen(isOpen)} />
+        <ErrorAlert isOpen={isErrorAlertOpen} info={nfcInfo} setOpen={setErrorAlertOpenn} />
       </IonContent>
     </IonPage>
   );

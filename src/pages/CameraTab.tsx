@@ -46,7 +46,7 @@ function CameraTab() {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+      <IonToolbar>
           <IonTitle>Камера</IonTitle>
         </IonToolbar>
       </IonHeader>

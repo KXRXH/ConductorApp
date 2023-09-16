@@ -6,8 +6,8 @@ function LoginAlert({ isOpen, setClose }: { isOpen: boolean, setClose: (v: boole
             <IonAlert
                 isOpen={isOpen}
                 header="Ошибка"
-                subHeader="Неверный логин или пароль"
-                message="Пожалуйста, введите верные данные или обратитесь в поддержку"
+                subHeader="Данная карта не найдена в реестре"
+                message="Пожалуйста, попробуйте ещё раз или обратитесь в поддержку"
                 buttons={['OK']}
                 onDidDismiss={() => setClose(false)}
             ></IonAlert>

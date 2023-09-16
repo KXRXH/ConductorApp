@@ -33,10 +33,10 @@ import "@ionic/react/css/text-transformation.css";
 
 /* Theme variables */
 import { useEffect, useState } from "react";
-import QrLoginPage from "./pages/QrLogin";
 import "./theme/variables.css";
 import { Device } from "@capacitor/device";
 import { useUUID } from "./utils/State";
+import ConnectionToast from "./components/ConnectionErrorToast";
 
 setupIonicReact();
 
@@ -47,13 +47,14 @@ function App() {
     const logDeviceInfo = async () => {
       const info = await Device.getId();
       setUUID(info.identifier);
-  };
-  logDeviceInfo();
+    };
+    logDeviceInfo();
   }, []);
 
-  
+
   return (
     <IonApp>
+      <ConnectionToast />
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
@@ -69,7 +70,6 @@ function App() {
             <Route exact path="/">
               <Redirect to="/account" />
             </Route>
-            <Route exact path="/account/qr" component={QrLoginPage} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="camera" href="/camera" disabled={!hasValidKey}>
