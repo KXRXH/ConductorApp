@@ -1,29 +1,48 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useEffect, useState } from 'react';
-import { didUserGrantPermission, prepare, startScan } from '../utils/qrcode';
+import { didUserGrantPermission, stopScan } from '../utils/QRcode';
 import DeAlert from '../components/DeAlert';
+import { useHistory } from 'react-router-dom';
+import { BarcodeScanner, SupportedFormat } from '@capacitor-community/barcode-scanner';
 
 function CameraTab() {
   const [isOpen, setIsOpen] = useState(false);
   const [info, setInfo] = useState("");
+  const history = useHistory();
+
   useEffect(() => {
     const main = async () => {
-      prepare();
-      const permision = await didUserGrantPermission();
-      if (!permision) {
-        return;
+      BarcodeScanner.prepare();
+      const permission = await didUserGrantPermission();
+      if (!permission) {
+        BarcodeScanner.openAppSettings();
       }
-      const result = await startScan();
-      if (result) {
-        setInfo(result);
-        setIsOpen(true);
-      }
-      // TODO: FIX RECURSION CALL AND ADD STOP SCAN
-      main()
-    }
-    main().catch(console.error);
-  }, [])
+      await BarcodeScanner.startScanning({ targetedFormats: [SupportedFormat.QR_CODE] }, (result, err) => {
+        if (err) {
+          return;
+        }
+        if (result.hasContent) {
+          setInfo(result.content);
+          setIsOpen(true);
+        }
+      });
+    };
 
+    main().catch(console.error);
+    // Listen for route changes
+    const unlisten = history.listen((location) => {
+      if (location.pathname !== '/camera') {
+        stopScan();
+      } else {
+        main().catch(console.error);
+      }
+    });
+
+    // Cleanup the listener when the component unmounts
+    return () => {
+      unlisten();
+    };
+  }, [history]);
   return (
     <IonPage>
       <IonHeader>

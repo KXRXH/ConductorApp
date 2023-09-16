@@ -1,4 +1,4 @@
-import { IonAlert, IonButton } from '@ionic/react';
+import { IonAlert } from '@ionic/react';
 
 function LoginAlert({ isOpen, setClose }: { isOpen: boolean, setClose: (v: boolean) => void }) {
     return (

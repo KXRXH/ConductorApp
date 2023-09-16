@@ -1,78 +1,54 @@
 import {
     IonButton,
+    IonContent,
+    IonHeader,
     IonIcon,
-    IonInput,
-    IonItem,
-    IonLabel,
-    IonList,
+    IonPage,
+    IonTitle,
+    IonToolbar,
     useIonRouter,
 } from "@ionic/react";
 import { qrCode } from "ionicons/icons";
-import { useState } from "react";
-import { isNumeric } from "../utils/main";
+import { useEffect, useState } from "react";
 import LoginAlert from "./LoginAlert";
 import "./LoginForm.css";
+import { useLocation } from "react-router";
 
 function LoginForm() {
-    const router = useIonRouter();
-    const [id, setId] = useState("");
-    const [password, setPassword] = useState("");
+    const location = useLocation();
+    const history = useIonRouter();
     const [alertOpen, setAlertOpen] = useState(false);
-
-    const login = () => {
-        if (!isNumeric(id) || password.length < 8) {
-            setAlertOpen(true);
-            return;
+    useEffect(() => {
+        const qrCodeValue = new URLSearchParams(location.search).get("qrCodeValue");
+        if (qrCodeValue) {
+            // TODO: Call api to validate current key and send valid data.
+            confirm(qrCodeValue);
         }
-    };
-
+    }, [location.search]);
     return (
-        <div className="form-container">
-            <div className="form-header">
-                <h1>Вход</h1>
-            </div>
-            <IonList>
-                <IonItem>
-                    <IonLabel position="floating">ИД сотрудника</IonLabel>
-                    <IonInput
-                        className="form-input"
-                        type="text"
-                        inputMode="numeric"
-                        value={id}
-                        onIonChange={(e) => setId(e.detail.value!)}
-                        aria-label="ID"
-                    ></IonInput>
-                </IonItem>
-
-                <IonItem>
-                    <IonLabel position="floating">Пароль</IonLabel>
-                    <IonInput
-                        className="form-input"
-                        type="password"
-                        value={password}
-                        onIonChange={(e) => setPassword(e.detail.value!)}
-                        aria-label="Password"
-                    ></IonInput>
-                </IonItem>
-            </IonList>
-
-            <IonButton onClick={login} size="large" className="login-button">
-                Войти
-            </IonButton>
-
-            <IonButton
-                fill="outline"
-                className="qr-button"
-                onClick={() => {
-                    router.push("/account/qr", "forward");
-                }}
-            >
-                <IonIcon slot="start" icon={qrCode} />
-                Вход через QR код
-            </IonButton>
-
-            <LoginAlert isOpen={alertOpen} setClose={setAlertOpen} />
-        </div>
+        <IonPage>
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle>Авторизация</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent fullscreen>
+                <div className="form-container">
+                    <IonButton
+                        size="large"
+                        fill="outline"
+                        className="qr-button"
+                        onClick={() => {
+                            history.push("/account/qr");
+                        }}
+                    >
+                        <IonIcon slot="start" icon={qrCode} />
+                        Сканировать QR-код
+                    </IonButton>
+                    <LoginAlert isOpen={alertOpen} setClose={setAlertOpen} />
+                </div>
+            </IonContent>
+        </IonPage>
     );
 }
 

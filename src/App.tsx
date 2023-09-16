@@ -9,9 +9,9 @@ import {
   setupIonicReact,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { camera, person, radio } from "ionicons/icons";
+import { camera, radio, settings } from "ionicons/icons";
 import { Redirect, Route } from "react-router-dom";
-import AccountTab from "./pages/AccountTab";
+import ToolsTab from "./pages/ToolsTab";
 import CameraTab from "./pages/CameraTab";
 import NfcTab from "./pages/NfcTab";
 
@@ -34,25 +34,24 @@ import "@ionic/react/css/text-transformation.css";
 /* Theme variables */
 import { useEffect, useState } from "react";
 import QrLoginPage from "./pages/QrLogin";
-import { storageGet } from "./storage/Storage";
 import "./theme/variables.css";
+import { Device } from "@capacitor/device";
+import { useUUID } from "./utils/State";
 
 setupIonicReact();
 
 function App() {
-  const [hasValidKey, setHasValidKey] = useState(false);
+  const [hasValidKey, setHasValidKey] = useState(true);
+  const { setUUID } = useUUID();
   useEffect(() => {
-    const fetchData = async () => {
-      const keyFromStorage = await storageGet("session_key");
-      // if (keyFromStorage == 'null') {
-      //   setHasValidKey(false);
-      //   return;
-      // }
-      // TODO: Call api to validate current key and send valid data.
-      setHasValidKey(false);
-    };
-    fetchData().catch(console.error);
+    const logDeviceInfo = async () => {
+      const info = await Device.getId();
+      setUUID(info.identifier);
+  };
+  logDeviceInfo();
   }, []);
+
+  
   return (
     <IonApp>
       <IonReactRouter>
@@ -65,27 +64,25 @@ function App() {
               <NfcTab />
             </Route>
             <Route exact path="/account">
-              <AccountTab isLoggedIn={hasValidKey} />
+              <ToolsTab isLoggedIn={hasValidKey} />
             </Route>
             <Route exact path="/">
               <Redirect to="/account" />
             </Route>
-            <Route path="/account/qr">
-              <QrLoginPage />
-            </Route>
+            <Route exact path="/account/qr" component={QrLoginPage} />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
-            <IonTabButton tab="camera" href="/camera" disabled={hasValidKey}>
+            <IonTabButton tab="camera" href="/camera" disabled={!hasValidKey}>
               <IonIcon aria-hidden="true" icon={camera} />
               <IonLabel>Сканировать</IonLabel>
             </IonTabButton>
-            <IonTabButton tab="nfc" href="/nfc" disabled={hasValidKey}>
+            <IonTabButton tab="nfc" href="/nfc" disabled={!hasValidKey}>
               <IonIcon aria-hidden="true" icon={radio} />
               <IonLabel>NFC</IonLabel>
             </IonTabButton>
             <IonTabButton tab="account" href="/account">
-              <IonIcon aria-hidden="true" icon={person} />
-              <IonLabel>Аккаунт</IonLabel>
+              <IonIcon aria-hidden="true" icon={settings} />
+              <IonLabel>Инструменты</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>
