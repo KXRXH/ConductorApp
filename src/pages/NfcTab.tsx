@@ -8,13 +8,13 @@ import {
   IonToolbar,
 } from '@ionic/react';
 import { useEffect, useState } from 'react';
-import DeAlert from '../components/DeAlert';
 import './NfcTab.css';
-import ErrorAlert from '../components/ErrorAlert';
+import CardHolderModal from '../components/CardHolderModal';
+import Client from '../dto/client';
 
 function NfcTab() {
-  const [isErrorAlertOpen, setErrorAlertOpenn] = useState(false);
-  const [nfcInfo, setNfcInfo] = useState('');
+  const [isOpenModal, setModalOpen] = useState(false);
+  const [client, setClient] = useState<Client | null>(null);
 
   useEffect(() => {
     NFC.enabled().then((_) => {
@@ -22,8 +22,28 @@ function NfcTab() {
         if (event.tag.id === null) {
           return;
         }
-        setNfcInfo(NFC.bytesToHexString(event.tag.id));
-        setErrorAlertOpenn(true);
+        const client2: Client = {
+          cardNumber: "9876 5432 1098 7654", // Замените на реальный номер карты
+          firstName: "Мария", // Замените на реальное имя
+          lastName: "Смирнова", // Замените на реальную фамилию
+          middleName: "Александровна", // Замените на реальное отчество
+          birth: new Date("1985-03-20"), // Замените на реальную дату рождения
+          benefits: [
+            {
+              id: 3,
+              amount: 75,
+              name: "Скидка 3",
+            },
+            {
+              id: 4,
+              amount: 40,
+              name: "Скидка 4",
+            },
+            // Добавьте другие преимущества по необходимости
+          ],
+        };
+        setClient(client2);
+        setModalOpen(true);
       });
     });
     return () => {
@@ -33,7 +53,7 @@ function NfcTab() {
   return (
     <IonPage>
       <IonHeader>
-      <IonToolbar>
+        <IonToolbar>
           <IonTitle>Бесконтактное чтение карты</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -43,9 +63,7 @@ function NfcTab() {
             Приложите карту к обратной стороне устройства
           </IonText>
         </div>
-        {// TODO: SHOW CARDHOLDER INFO 
-        }
-        <ErrorAlert isOpen={isErrorAlertOpen} info={nfcInfo} setOpen={setErrorAlertOpenn} />
+        <CardHolderModal isOpen={isOpenModal} setOpen={setModalOpen} client={client} />
       </IonContent>
     </IonPage>
   );

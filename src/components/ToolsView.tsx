@@ -173,7 +173,7 @@ function ToolsView() {
                 </IonButton>
               </div>
               <IonText className="ion-margin-top">
-                Последняя синхронизация: {lastSyncTime || '...'}
+                Последняя синхронизация: {lastSyncTime}
               </IonText>
             </IonCardContent>
           </IonCard>

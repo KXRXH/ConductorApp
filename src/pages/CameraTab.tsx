@@ -4,10 +4,12 @@ import { didUserGrantPermission, stopScan } from '../utils/QRcode';
 import DeAlert from '../components/DeAlert';
 import { useHistory } from 'react-router-dom';
 import { BarcodeScanner, SupportedFormat } from '@capacitor-community/barcode-scanner';
+import Client from '../dto/client';
+import CardHolderModal from '../components/CardHolderModal';
 
 function CameraTab() {
   const [isOpen, setIsOpen] = useState(false);
-  const [info, setInfo] = useState("");
+  const [client, setClient] = useState<Client | null>(null);
   const history = useHistory();
 
   useEffect(() => {
@@ -18,13 +20,32 @@ function CameraTab() {
         BarcodeScanner.openAppSettings();
       }
       await BarcodeScanner.startScanning({ targetedFormats: [SupportedFormat.QR_CODE] }, (result, err) => {
-        if (err) {
+        if (err || !result.hasContent) {
           return;
         }
-        if (result.hasContent) {
-          setInfo(result.content);
-          setIsOpen(true);
-        }
+
+        const client: Client = {
+          cardNumber: "1234 5678 9012 3456", // Replace with the actual card number
+          firstName: "Иван", // Replace with the actual first name
+          lastName: "Иванов", // Replace with the actual last name
+          middleName: "Иванович", // Replace with the actual middle name
+          birth: new Date("2004-12-15"), // Replace with the actual birth date
+          benefits: [
+            {
+              id: 1,
+              amount: 15,
+              name: "Вечерний",
+            },
+            {
+              id: 2,
+              amount: 100,
+              name: "Студенческий",
+            },
+            // Add more benefits as needed
+          ],
+        };
+        setClient(client);
+        setIsOpen(true);
       });
     };
 
@@ -46,12 +67,12 @@ function CameraTab() {
   return (
     <IonPage>
       <IonHeader>
-      <IonToolbar>
+        <IonToolbar>
           <IonTitle>Камера</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent style={{ display: 'none' }} fullscreen>
-        <DeAlert info={info} isOpen={isOpen} setClose={setIsOpen} />
+        <CardHolderModal isOpen={isOpen} setOpen={setIsOpen} client={client} />
       </IonContent>
     </IonPage>
   );
